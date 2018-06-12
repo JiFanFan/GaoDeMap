@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="us.mifeng.administrator.day_607.CategrayActivity">
+    <Button
+        android:onClick="btn1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="地图及Marker+Infowindow显示"/>
+    <Button
+        android:onClick="btn2"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="POI检测"/>
+</LinearLayout>
