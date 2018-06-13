@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     tools:context="us.mifeng.administrator.day_607.MainActivity">
     <TextView
         android:id="@+id/tv_location"
