@@ -2,15 +2,15 @@ package us.mifeng.administrator.day_607;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -27,9 +27,10 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener{
     MapView mMapView = null;
     AMap aMap;
+    private TextView tv_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
         mMapView = (MapView) findViewById(R.id.mapview);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
+        tv_location = (TextView) findViewById(R.id.tv_location);
         test();
 
         initLogoMarker();
     }
-
     private void initLogoMarker() {
         LatLng latLng=new LatLng(40.239437,116.133239);
         BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     @Override
@@ -137,7 +139,20 @@ public class MainActivity extends AppCompatActivity {
 
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
 //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
+        //实现定位功能
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
+        //启动定位后1秒拿到地址
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Location myLocation = aMap.getMyLocation();
+                if(myLocation==null){
+                    tv_location.setText("定位中...");
+                }else {
+                    tv_location.setText(myLocation.getExtras().get("City")+"");
+                }
+            }
+        },1000);
     }
 
     @Override
@@ -175,6 +190,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //写入你需要权限才能使用的方法
             initMap();
+        }
+    }
+
+    @Override
+    public void onMyLocationChange(Location location) {
+        //从location对象中获取经纬度信息，地址描述信息，建议拿到位置之后调用逆地理编码接口获取
+        if(location==null){
+            tv_location.setText("定位中...");
+        }else {
+            tv_location.setText(location.getExtras().get("City")+"");
         }
     }
 }

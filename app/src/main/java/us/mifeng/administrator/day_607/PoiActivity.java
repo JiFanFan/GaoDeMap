@@ -1,5 +1,6 @@
 package us.mifeng.administrator.day_607;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -122,6 +123,17 @@ public class PoiActivity extends AppCompatActivity implements PoiSearch.OnPoiSea
                         marker.showInfoWindow();
                     }
                     return true;
+                }
+            });
+            //infowindow点击事件
+            aMap.setOnInfoWindowClickListener(new AMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Intent intent=new Intent(PoiActivity.this,DetailsActivity.class);
+                    intent.putExtra("latlun",marker.getPosition());
+                    intent.putExtra("title",marker.getTitle());
+                    intent.putExtra("des",marker.getSnippet());
+                    startActivity(intent);
                 }
             });
         }

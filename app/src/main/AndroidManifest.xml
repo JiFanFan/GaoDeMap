@@ -26,8 +26,9 @@
             android:name="com.amap.api.v2.apikey"
             android:value="92edb2cde9a4ba91022cb136b5e971fc" />
 
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity android:name=".CategrayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +36,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PoiActivity"></activity>
+        <activity android:name=".PoiActivity" />
+        <activity android:name=".DetailsActivity"></activity>
     </application>
 
 </manifest>
