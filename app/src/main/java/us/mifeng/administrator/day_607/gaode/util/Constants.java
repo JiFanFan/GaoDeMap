@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607.util;
+package us.mifeng.administrator.day_607.gaode.util;
 
 import com.amap.api.maps.model.LatLng;
 

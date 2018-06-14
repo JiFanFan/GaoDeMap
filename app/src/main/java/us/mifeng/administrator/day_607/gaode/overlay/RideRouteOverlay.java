@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607.overlay;
+package us.mifeng.administrator.day_607.gaode.overlay;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ import com.amap.api.services.route.RideStep;
 import java.util.List;
 
 import us.mifeng.administrator.day_607.R;
-import us.mifeng.administrator.day_607.util.AMapUtil;
+import us.mifeng.administrator.day_607.gaode.util.AMapUtil;
 
 /**
  * 骑行路线图层类。在高德地图API里，如果要显示步行路线规划，可以用此类来创建骑行路线图层。如不满足需求，也可以自己创建自定义的骑行路线图层。

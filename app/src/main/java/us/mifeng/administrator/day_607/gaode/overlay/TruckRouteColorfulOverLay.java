@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607.overlay;
+package us.mifeng.administrator.day_607.gaode.overlay;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,32 +12,31 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.route.DrivePath;
-import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.TMC;
+import com.amap.api.services.route.TruckPath;
+import com.amap.api.services.route.TruckStep;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import us.mifeng.administrator.day_607.R;
-import us.mifeng.administrator.day_607.util.AMapUtil;
+import us.mifeng.administrator.day_607.gaode.util.AMapUtil;
 
 
 /**
  * 导航路线图层类。
  */
-public class DrivingRouteOverlay extends RouteOverlay{
+public class TruckRouteColorfulOverLay extends RouteOverlay{
 
-	private DrivePath drivePath;
+	private TruckPath truckPath;
     private List<LatLonPoint> throughPointList;
     private List<Marker> throughPointMarkerList = new ArrayList<Marker>();
     private boolean throughPointMarkerVisible = true;
     private List<TMC> tmcs;
     private PolylineOptions mPolylineOptions;
-    private PolylineOptions mPolylineOptionscolor;
     private Context mContext;
     private boolean isColorfulline = true;
-    private float mWidth = 25;
+    private float mWidth = 17;
     private List<LatLng> mLatLngsOfPath;
 
 	public void setIsColorfulline(boolean iscolorfulline) {
@@ -51,17 +50,18 @@ public class DrivingRouteOverlay extends RouteOverlay{
      * @param path 导航路线规划方案。
      * @param context   当前的activity对象。
      */
-    public DrivingRouteOverlay(Context context, AMap amap, DrivePath path,
-            LatLonPoint start, LatLonPoint end, List<LatLonPoint> throughPointList) {
+    public TruckRouteColorfulOverLay(Context context, AMap amap, TruckPath path,
+                                     LatLonPoint start, LatLonPoint end, List<LatLonPoint> throughPointList) {
     	super(context);
     	mContext = context; 
         mAMap = amap; 
-        this.drivePath = path;
+        this.truckPath = path;
         startPoint = AMapUtil.convertToLatLng(start);
         endPoint = AMapUtil.convertToLatLng(end);
         this.throughPointList = throughPointList;
     }
 
+    @Override
     public float getRouteWidth() {
         return mWidth;
     }
@@ -85,18 +85,18 @@ public class DrivingRouteOverlay extends RouteOverlay{
                 return;
             }
 
-            if (mWidth == 0 || drivePath == null) {
+            if (mWidth == 0 || truckPath == null) {
                 return;
             }
             mLatLngsOfPath = new ArrayList<LatLng>();
             tmcs = new ArrayList<TMC>();
-            List<DriveStep> drivePaths = drivePath.getSteps();
+            List<TruckStep> steps = truckPath.getSteps();
             mPolylineOptions.add(startPoint);
-            for (DriveStep step : drivePaths) {
+            for (TruckStep step : steps) {
                 List<LatLonPoint> latlonPoints = step.getPolyline();
                 List<TMC> tmclist = step.getTMCs();
                 tmcs.addAll(tmclist);
-                addDrivingStationMarkers(step, convertToLatLng(latlonPoints.get(0)));
+
                 for (LatLonPoint latlonpoint : latlonPoints) {
                 	mPolylineOptions.add(convertToLatLng(latlonpoint));
                 	mLatLngsOfPath.add(convertToLatLng(latlonpoint));
@@ -115,7 +115,6 @@ public class DrivingRouteOverlay extends RouteOverlay{
             addThroughPointMarker();
             if (isColorfulline && tmcs.size()>0 ) {
             	colorWayUpdate(tmcs);
-            	showcolorPolyline();
 			}else {
 				showPolyline();
 			}            
@@ -125,7 +124,7 @@ public class DrivingRouteOverlay extends RouteOverlay{
         }
     }
 
-	/**
+    /**
      * 初始化线段属性
      */
     private void initPolylineOptions() {
@@ -140,10 +139,6 @@ public class DrivingRouteOverlay extends RouteOverlay{
         addPolyLine(mPolylineOptions);
     }
     
-    private void showcolorPolyline() {
-    	addPolyLine(mPolylineOptionscolor);
-		
-	}
 
     /**
      * 根据不同的路段拥堵情况展示不同的颜色
@@ -154,47 +149,75 @@ public class DrivingRouteOverlay extends RouteOverlay{
         if (mAMap == null) {
             return;
         }
+        if (mLatLngsOfPath == null || mLatLngsOfPath.size() <= 0) {
+            return;
+        }
         if (tmcSection == null || tmcSection.size() <= 0) {
             return;
         }
+        int j = 0;
+        LatLng startLatLng = mLatLngsOfPath.get(0);
+        LatLng endLatLng = null;
+        double segmentTotalDistance = 0;
         TMC segmentTrafficStatus;
-        mPolylineOptionscolor = null;
-        mPolylineOptionscolor = new PolylineOptions();
-        mPolylineOptionscolor.width(getRouteWidth());
-        List<Integer> colorList = new ArrayList<Integer>();
-        mPolylineOptionscolor.add(startPoint);
-        mPolylineOptionscolor.add(AMapUtil.convertToLatLng(tmcSection.get(0).getPolyline().get(0)));
-        colorList.add(getDriveColor());
-        for (int i = 0; i < tmcSection.size(); i++) {
-        	segmentTrafficStatus = tmcSection.get(i);
-        	int color = getcolor(segmentTrafficStatus.getStatus());
-        	List<LatLonPoint> mployline = segmentTrafficStatus.getPolyline();
-			for (int j = 1; j < mployline.size(); j++) {
-				mPolylineOptionscolor.add(AMapUtil.convertToLatLng(mployline.get(j)));
-				colorList.add(color);
-			}
-		}
-        mPolylineOptionscolor.add(endPoint); 
-        colorList.add(getDriveColor());
-        mPolylineOptionscolor.colorValues(colorList);
+        List<LatLng> tempList = new ArrayList<LatLng>();
+        //画出起点到规划路径之间的连线
+        addPolyLine(new PolylineOptions().add(startPoint, startLatLng)
+				.setDottedLine(true));
+        //终点和规划路径之间连线
+        addPolyLine(new PolylineOptions().add(mLatLngsOfPath.get(mLatLngsOfPath.size()-1), 
+        		endPoint).setDottedLine(true));
+        for (int i = 0; i < mLatLngsOfPath.size() && j < tmcSection.size(); i++) {
+            segmentTrafficStatus = tmcSection.get(j);
+            endLatLng = mLatLngsOfPath.get(i);
+            double distanceBetweenTwoPosition = calculateDistance(startLatLng, endLatLng);
+            segmentTotalDistance = segmentTotalDistance + distanceBetweenTwoPosition;
+            if (segmentTotalDistance > segmentTrafficStatus.getDistance() + 1) {
+                double toSegDis = distanceBetweenTwoPosition - (segmentTotalDistance - segmentTrafficStatus.getDistance());
+                LatLng middleLatLng = getPointForDis(startLatLng, endLatLng, toSegDis);
+                tempList.add(middleLatLng);
+                startLatLng = middleLatLng;
+                i--;
+            } else {
+                tempList.add(endLatLng);
+                startLatLng = endLatLng;
+            }
+            if (segmentTotalDistance >= segmentTrafficStatus.getDistance() || i == mLatLngsOfPath.size() - 1) {
+                if (j == tmcSection.size() - 1 && i < mLatLngsOfPath.size() - 1) {
+                    for (i++; i < mLatLngsOfPath.size(); i++) {
+                        LatLng lastLatLng = mLatLngsOfPath.get(i);
+                        tempList.add(lastLatLng);
+                    }
+                }
+                j++;
+                if (segmentTrafficStatus.getStatus().equals("畅通")) {
+                	addPolyLine((new PolylineOptions()).addAll(tempList)
+                            .width(mWidth).color(Color.GREEN));
+				} else if (segmentTrafficStatus.getStatus().equals("缓行")) {
+					addPolyLine((new PolylineOptions()).addAll(tempList)
+                            .width(mWidth).color(Color.YELLOW));
+				} else if (segmentTrafficStatus.getStatus().equals("拥堵")) {
+					addPolyLine((new PolylineOptions()).addAll(tempList)
+                             .width(mWidth).color(Color.RED));
+				} else if (segmentTrafficStatus.getStatus().equals("严重拥堵")) {
+					addPolyLine((new PolylineOptions()).addAll(tempList)
+                            .width(mWidth).color(Color.parseColor("#990033")));
+				} else {
+					addPolyLine((new PolylineOptions()).addAll(tempList)
+                            .width(mWidth).color(Color.parseColor("#537edc")));
+				}
+                tempList.clear();
+                tempList.add(startLatLng);
+                segmentTotalDistance = 0;
+            }
+           if (i == mLatLngsOfPath.size() - 1) {
+        	   addPolyLine(new PolylineOptions().add(endLatLng, endPoint)
+        			   .setDottedLine(true));
+		} 
+        }
     }
     
-    private int getcolor(String status) {
-
-    	if (status.equals("畅通")) {
-    		return Color.GREEN;
-		} else if (status.equals("缓行")) {
-			 return Color.YELLOW;
-		} else if (status.equals("拥堵")) {
-			return Color.RED;
-		} else if (status.equals("严重拥堵")) {
-			return Color.parseColor("#990033");
-		} else {
-			return Color.parseColor("#537edc");
-		}	
-	}
-
-	public LatLng convertToLatLng(LatLonPoint point) {
+    public LatLng convertToLatLng(LatLonPoint point) {
         return new LatLng(point.getLatitude(),point.getLongitude());
   }
     
@@ -202,13 +225,14 @@ public class DrivingRouteOverlay extends RouteOverlay{
      * @param driveStep
      * @param latLng
      */
-    private void addDrivingStationMarkers(DriveStep driveStep, LatLng latLng) {
-        addStationMarker(new MarkerOptions()
-                .position(latLng)
-                .title("\u65B9\u5411:" + driveStep.getAction()
-                        + "\n\u9053\u8DEF:" + driveStep.getRoad())
-                .snippet(driveStep.getInstruction()).visible(nodeIconVisible)
-                .anchor(0.5f, 0.5f).icon(getDriveBitmapDescriptor()));
+    private void addLimitMarker(TruckStep step, LatLng latLng) {
+
+//        addStationMarker(new MarkerOptions()
+//                .position(latLng)
+//                .title("\u65B9\u5411:" + driveStep.getAction()
+//                        + "\n\u9053\u8DEF:" + driveStep.getRoad())
+//                .snippet(driveStep.getInstruction()).visible(nodeIconVisible)
+//                .anchor(0.5f, 0.5f).icon(getDriveBitmapDescriptor()));
     }
 
     @Override

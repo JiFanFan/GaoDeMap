@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607.util;
+package us.mifeng.administrator.day_607.gaode.util;
 
 public class ChString {
 	public static final String Kilometer = "\u516c\u91cc";// "公里";

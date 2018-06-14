@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607;
+package us.mifeng.administrator.day_607.gaode;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,12 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -26,6 +21,8 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+
+import us.mifeng.administrator.day_607.R;
 
 public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener{
     MapView mMapView = null;

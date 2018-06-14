@@ -1,15 +1,12 @@
-package us.mifeng.administrator.day_607;
+package us.mifeng.administrator.day_607.gaode;
 
 import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
@@ -29,9 +26,8 @@ import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.RouteSearch.OnRouteSearchListener;
 import com.amap.api.services.route.WalkRouteResult;
 
-import java.util.List;
-
-import us.mifeng.administrator.day_607.overlay.DrivingRouteOverlay;
+import us.mifeng.administrator.day_607.R;
+import us.mifeng.administrator.day_607.gaode.overlay.DrivingRouteOverlay;
 
 public class RouteActivity extends AppCompatActivity implements OnRouteSearchListener{
     RouteSearch routeSearch;
@@ -49,7 +45,7 @@ public class RouteActivity extends AppCompatActivity implements OnRouteSearchLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
         initMapView(savedInstanceState);
-        initLocation();
+        //initLocation();
         initIntent();
         initSearchDriveRoute();
     }

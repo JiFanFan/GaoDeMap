@@ -1,4 +1,4 @@
-package us.mifeng.administrator.day_607.overlay;
+package us.mifeng.administrator.day_607.gaode.overlay;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ import com.amap.api.services.route.WalkStep;
 import java.util.ArrayList;
 import java.util.List;
 
-import us.mifeng.administrator.day_607.util.AMapUtil;
+import us.mifeng.administrator.day_607.gaode.util.AMapUtil;
 
 /**
  * 公交路线图层类。在高德地图API里，如果需要显示公交路线，可以用此类来创建公交路线图层。如不满足需求，也可以自己创建自定义的公交路线图层。

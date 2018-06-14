@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="us.mifeng.administrator.day_607.DetailsActivity">
+    tools:context="us.mifeng.administrator.day_607.gaode.DetailsActivity">
     <TextView
         android:id="@+id/tv_details"
         android:layout_width="match_parent"

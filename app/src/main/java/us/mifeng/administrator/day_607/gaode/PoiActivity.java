@@ -1,10 +1,9 @@
-package us.mifeng.administrator.day_607;
+package us.mifeng.administrator.day_607.gaode;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -20,12 +20,12 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.poisearch.Photo;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import us.mifeng.administrator.day_607.R;
 
 public class PoiActivity extends AppCompatActivity implements PoiSearch.OnPoiSearchListener{
 
@@ -79,7 +79,7 @@ public class PoiActivity extends AppCompatActivity implements PoiSearch.OnPoiSea
     private void initMarker(ArrayList<PoiItem> pois) {
         for (final PoiItem poiItem:pois){
             LatLonPoint latLonPoint = poiItem.getLatLonPoint();
-            LatLng latLng=new LatLng(latLonPoint.getLatitude(),latLonPoint.getLongitude());
+            final LatLng latLng=new LatLng(latLonPoint.getLatitude(),latLonPoint.getLongitude());
             BitmapDescriptor bitmapDescriptor= BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
             Marker marker = aMap.addMarker(new MarkerOptions().position(latLng).icon(bitmapDescriptor).title(poiItem.getTitle()).snippet(poiItem.getSnippet()));
             markerList.add(marker);
@@ -116,11 +116,12 @@ public class PoiActivity extends AppCompatActivity implements PoiSearch.OnPoiSea
             //marker点击事件
             aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
                 @Override
-                public boolean onMarkerClick(Marker marker) {
+                public boolean onMarkerClick(final Marker marker) {
                     if (marker.isInfoWindowShown()){
                         marker.hideInfoWindow();
                     }else {
                         marker.showInfoWindow();
+                        aMap. moveCamera(CameraUpdateFactory.changeLatLng(marker.getPosition()));//这个是关键  如果不设置的话中心点是北京，汇出现目标点在地图上显示不了
                     }
                     return true;
                 }
