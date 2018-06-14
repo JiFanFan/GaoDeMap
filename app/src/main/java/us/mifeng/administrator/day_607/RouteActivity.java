@@ -111,6 +111,7 @@ public class RouteActivity extends AppCompatActivity implements OnRouteSearchLis
     public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
 
     }
+
     //接收数据
     @Override
     public void onDriveRouteSearched(DriveRouteResult result, int i) {
